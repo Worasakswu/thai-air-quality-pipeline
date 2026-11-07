@@ -1,5 +1,6 @@
 """ETL pipeline: ดึงค่าฝุ่น PM2.5/PM10 ของเมืองในไทยจาก Open-Meteo แล้วบันทึกลง PostgreSQL"""
 import requests
+import sys
 import pandas as pd
 import psycopg2
 from psycopg2.extras import execute_values
@@ -13,14 +14,14 @@ CITIES = {
 }
 
 
-def extract(city, lat, lon):
+def extract(city, lat, lon, past_days=1):
     """ดึงข้อมูลรายชั่วโมงย้อนหลัง 1 วันจาก API"""
     params = {
         "latitude": lat,
         "longitude": lon,
         "hourly": "pm2_5,pm10",
         "timezone": "Asia/Bangkok",
-        "past_days": 1,
+        "past_days": past_days,
         "forecast_days": 1,
     }
     response = requests.get(API_URL, params=params, timeout=30)
@@ -58,7 +59,8 @@ def load(df):
 
 
 def main():
-    frames = [extract(city, lat, lon) for city, (lat, lon) in CITIES.items()]
+    past_days = int(sys.argv[1]) if len(sys.argv) > 1 else 1
+    frames = [extract(city, lat, lon, past_days) for city, (lat, lon) in CITIES.items()]
     df = transform(pd.concat(frames, ignore_index=True))
     inserted = load(df)
     print(f"ดึงมา {len(df)} แถว, บันทึกใหม่ {inserted} แถว")

@@ -3,6 +3,12 @@
 ETL pipeline ที่ดึงข้อมูลค่าฝุ่น PM2.5 และ PM10 รายชั่วโมงของ 4 เมืองในไทย
 (Bangkok, Chiang Mai, Khon Kaen, Phuket) จาก Open-Meteo API แล้วบันทึกลง PostgreSQL
 
+## Dashboard
+
+![Dashboard](docs/Thair.png)
+
+รัน dashboard: `streamlit run dashboard.py` แล้วเปิด http://localhost:8501
+
 ## Architecture
 
 Open-Meteo API → Python (extract + transform ด้วย pandas) → PostgreSQL → SQL analysis
