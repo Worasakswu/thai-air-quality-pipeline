@@ -37,3 +37,11 @@ FROM air_quality GROUP BY city ORDER BY avg_pm25 DESC;
 ## Limitations & Next Steps
 - cron ทำงานเฉพาะตอนที่ WSL เปิดอยู่
 - แผนต่อไป: Docker Compose, Airflow, dashboard
+
+## Architecture
+
+```
+Open-Meteo API → Python (extract + transform ด้วย pandas) → PostgreSQL → SQL analysis
+                         ↑
+                  cron (ทุกชั่วโมง)
+```
